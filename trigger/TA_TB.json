@@ -1,0 +1,35 @@
+{
+	"name": "TA_TB",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "SQL_COPY_dynamicDBandtablename",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"sourceDBName": "db-anandsqljun23",
+					"sourceTableName": "TABLE_B",
+					"destDBName": "db-anandsqljun23",
+					"destTableName": "TABLE_A"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2023-06-02T05:17:00",
+				"timeZone": "India Standard Time",
+				"schedule": {
+					"monthDays": [
+						31
+					]
+				}
+			}
+		}
+	}
+}

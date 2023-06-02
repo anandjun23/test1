@@ -1,0 +1,9 @@
+{
+	"name": "df-anandjun23",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "9d325912-efba-45d9-adab-0b8658f0cbb6",
+		"tenantId": "366287ca-c3ea-41e7-8e59-52fdbdc219dd"
+	}
+}
