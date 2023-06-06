@@ -1,0 +1,157 @@
+{
+	"name": "SCD2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SCD2_database",
+						"type": "DatasetReference"
+					},
+					"name": "SCDeXISTING"
+				},
+				{
+					"dataset": {
+						"referenceName": "SCD2_newrecords",
+						"type": "DatasetReference"
+					},
+					"name": "SCDnewrecord"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SCD2_database",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "SCD2_database",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "lookup1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "derivedColumn2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ID as integer,",
+				"          Empid as integer,",
+				"          Name as string,",
+				"          Designation as string,",
+				"          Eff_From as date,",
+				"          Eff_To as date,",
+				"          Is_Active as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SCDeXISTING",
+				"source(output(",
+				"          Empid as integer,",
+				"          Name as string,",
+				"          Designation as string,",
+				"          Eff_From as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SCDnewrecord",
+				"SCDeXISTING, select1 lookup(SCDeXISTING@Empid == select1@Empid,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup1",
+				"SCDnewrecord select(mapColumn(",
+				"          Empid,",
+				"          New_Name = Name,",
+				"          New_Designation = Designation,",
+				"          New_Eff_From = Eff_From",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"lookup1 filter(and(Is_Active == \"Yes\",!isNull(New_Designation))) ~> filter1",
+				"filter1 derive(Is_Active = \"No\",",
+				"          Eff_To = subDays(New_Eff_From,1)) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          ID,",
+				"          Empid = SCDeXISTING@Empid,",
+				"          Name,",
+				"          Designation,",
+				"          Eff_From,",
+				"          Eff_To,",
+				"          Is_Active",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 alterRow(updateIf(true())) ~> alterRow1",
+				"SCDnewrecord derive(Eff_To = toDate(\"2100-12-31\"),",
+				"          Is_Active = \"Yes\") ~> derivedColumn2",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ID as integer,",
+				"          Empid as integer,",
+				"          Name as string,",
+				"          Designation as string,",
+				"          Eff_From as date,",
+				"          Eff_To as date,",
+				"          Is_Active as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ID as integer,",
+				"          Empid as integer,",
+				"          Name as string,",
+				"          Designation as string,",
+				"          Eff_From as date,",
+				"          Eff_To as date,",
+				"          Is_Active as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+			]
+		}
+	}
+}
