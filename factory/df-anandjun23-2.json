@@ -1,5 +1,13 @@
 {
 	"name": "df-anandjun23-2",
+	"properties": {
+		"globalParameters": {
+			"Global_name": {
+				"type": "string",
+				"value": "Test"
+			}
+		}
+	},
 	"location": "centralindia",
 	"identity": {
 		"type": "SystemAssigned",
