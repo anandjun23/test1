@@ -1,0 +1,20 @@
+{
+	"name": "powerquery1",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "CDC_destination",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~>  CDC_destination",
+					"dataset": {
+						"referenceName": "CDC_destination",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"script": "section Section1;\r\nshared CDC_destination = let AdfDoc = Sql.Database(\"db-anandsqljun23server.database.windows.net\", \"db-anandsqljun23\", [CreateNavigationProperties = false]), InputTable = AdfDoc{[Schema=\"dbo\",Item=\"DESTINATION\"]}[Data] in InputTable;\r\nshared UserQuery = let Source = #\"CDC_destination\" in Source;\r\n",
+			"documentLocale": "en-us"
+		}
+	}
+}
