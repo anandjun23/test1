@@ -1,0 +1,48 @@
+{
+	"name": "filter_Via_flowlet",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "FLOWLETINPUT",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "FLOWLETOUTPUT",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "flowlet1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          emp_id as string,",
+				"          Name as string,",
+				"          Salary as string,",
+				"          department_name as string,",
+				"          country_id as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 compose(composition: 'undefined') ~> flowlet1@()",
+				"flowlet1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,23 @@
+{
+	"name": "FLOWLETOUTPUT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_blob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "Output",
+				"container": "flowlets"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
