@@ -30,7 +30,7 @@
 				"source(output(",
 				"          emp_id as string,",
 				"          Name as string,",
-				"          Salary as string,",
+				"          Salary as integer,",
 				"          department_name as string,",
 				"          country_id as string",
 				"     ),",
