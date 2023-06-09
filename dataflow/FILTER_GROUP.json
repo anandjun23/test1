@@ -23,16 +23,16 @@
 				"input(output(",
 				"          emp_id as string,",
 				"          Name as string,",
-				"          Salary as integer,",
+				"          Salary3 as integer,",
 				"          department_name as string,",
 				"          country_id as string",
 				"     ),",
 				"     order: 0,",
 				"     allowSchemaDrift: true) ~> input1",
-				"input1 filter(Salary > 3000) ~> filter1",
+				"input1 filter(Salary3 > 3000) ~> filter1",
 				"filter1 aggregate(groupBy(country_id,",
 				"          department_name),",
-				"     Salary = sum(Salary)) ~> aggregate1",
+				"     Salary = sum(Salary3)) ~> aggregate1",
 				"aggregate1 output() ~> output1"
 			]
 		}
