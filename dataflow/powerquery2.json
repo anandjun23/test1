@@ -1,0 +1,20 @@
+{
+	"name": "powerquery2",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "FLOWLETINPUT",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~>  FLOWLETINPUT",
+					"dataset": {
+						"referenceName": "FLOWLETINPUT",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"script": "section Section1;\r\nshared FLOWLETINPUT = let AdfDoc = AzureStorage.BlobContents(\"https://stganandjun23.blob.core.windows.net/flowlets/Input/emp_sal.csv\"),Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]), PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true]) in  PromotedHeaders;\r\nshared UserQuery = let Source = #\"FLOWLETINPUT\",\r\n  #\"Changed column type\" = Table.TransformColumnTypes(Source, {{\"Salary\", Int64.Type}}),\r\n  #\"Filtered rows\" = Table.SelectRows(#\"Changed column type\", each [Salary] > 3000),\r\n  #\"Grouped rows\" = Table.Group(#\"Filtered rows\", {\"country_id\", \"department_name\"}, {{\"Sum_Salary\", each List.Sum([Salary]), type nullable number}}) in #\"Grouped rows\";\r\n",
+			"documentLocale": "en-us"
+		}
+	}
+}
