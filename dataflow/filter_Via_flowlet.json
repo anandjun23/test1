@@ -23,7 +23,11 @@
 			],
 			"transformations": [
 				{
-					"name": "flowlet1"
+					"name": "flowlet1",
+					"flowlet": {
+						"referenceName": "FILTER_GROUP",
+						"type": "DataFlowReference"
+					}
 				}
 			],
 			"scriptLines": [
@@ -37,11 +41,20 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
-				"source1 compose(composition: 'undefined') ~> flowlet1@()",
-				"flowlet1 sink(allowSchemaDrift: true,",
+				"source1 compose(mapColumn(",
+				"          emp_id,",
+				"          Name,",
+				"          Salary,",
+				"          department_name,",
+				"          country_id",
+				"     ),",
+				"     composition: 'FILTER_GROUP') ~> flowlet1@(output1)",
+				"flowlet1@output1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     partitionFileNames:['Flowlet_output.csv'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
 	}
